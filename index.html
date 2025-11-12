@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<title>Zahlenschloss für den Unterricht</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  h1, h2 {
+    text-align: center;
+  }
+  label {
+    font-weight: bold;
+    display: block;
+    margin: 15px 0 5px;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2em;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  button {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    margin-top: 10px;
+    background-color: #007acc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  #message {
+    margin-top: 15px;
+    font-weight: bold;
+    text-align: center;
+    min-height: 1.5em;
+  }
+  #message.success {
+    color: green;
+  }
+  #message.error {
+    color: red;
+  }
+</style>
+</head>
+<body>
+<h1>Zahlenschloss im Unterricht</h1>
+
+<label for="teacherCode">Lehrer: Gib den korrekten Code ein</label>
+<input type="text" id="teacherCode" placeholder="Code für Aufgabe" />
+
+<button id="setCodeBtn">Code festlegen</button>
+
+<hr />
+
+<h2>Schüler: Code eingeben</h2>
+<input type="text" id="studentInput" placeholder="Code eingeben" disabled />
+
+<button id="checkBtn" disabled>Code prüfen</button>
+
+<div id="message"></div>
+
+<script>
+  let korrektCode = '';
+  let versuche = 3;
+
+  const teacherCodeInput = document.getElementById('teacherCode');
+  const setCodeBtn = document.getElementById('setCodeBtn');
+  const studentInput = document.getElementById('studentInput');
+  const checkBtn = document.getElementById('checkBtn');
+  const message = document.getElementById('message');
+
+  setCodeBtn.addEventListener('click', () => {
+    const code = teacherCodeInput.value.trim();
+    if (!code) {
+      alert('Bitte einen gültigen Code eingeben');
+      return;
+    }
+    korrektCode = code;
+    versuche = 3;
+    studentInput.disabled = false;
+    checkBtn.disabled = false;
+    studentInput.value = '';
+    message.textContent = '';
+    teacherCodeInput.value = '';
+    alert('Code wurde festgelegt. Schüler können jetzt eintippen.');
+  });
+
+  checkBtn.addEventListener('click', () => {
+    const eingabe = studentInput.value.trim();
+    if (!eingabe) {
+      alert('Bitte einen Code eingeben.');
+      return;
+    }
+    if (versuche <= 0) {
+      message.textContent = 'Keine weiteren Versuche.';
+      message.className = 'error';
+      studentInput.disabled = true;
+      checkBtn.disabled = true;
+      return;
+    }
+
+    if (eingabe === korrektCode) {
+      message.textContent = 'Glückwunsch! Schloss geknackt!';
+      message.className = 'success';
+      studentInput.disabled = true;
+      checkBtn.disabled = true;
+    } else {
+      versuche--;
+      if (versuche > 0) {
+        message.textContent = 'Versuchs nochmal!';
+        message.className = 'error';
+      } else {
+        message.textContent = 'Keine weiteren Versuche.';
+        message.className = 'error';
+        studentInput.disabled = true;
+        checkBtn.disabled = true;
+      }
+    }
+    studentInput.value = '';
+  });
+</script>
+</body>
+</html>
